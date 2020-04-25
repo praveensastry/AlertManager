@@ -1,0 +1,39 @@
+{
+  "name": "alert-manager",
+  "version": "1.0.0",
+  "description": "The aim of this exercise is to implement an \"alerting\" service which will consume a file of currency conversion rates and produce alerts for a number of situations.",
+  "main": "src/index.js",
+  "type": "module",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "debug": "node --inspect-brk scr/index.js",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jsonlines": "^0.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "babel-plugin-transform-default-import": "^1.0.0",
+    "jest": "^25.4.0"
+  },
+  "babel": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "node": "current"
+            }
+          }
+        ]
+      ],
+      "plugins": ["transform-default-import"]
+  }
+}
