@@ -8,8 +8,8 @@
     "example": "example"
   },
   "scripts": {
-    "start": "node src/index.js",
-    "debug": "node --inspect-brk scr/index.js",
+    "start": "node --no-warnings src/index.js",
+    "debug": "node --inspect-brk src/index.js",
     "test": "jest"
   },
   "author": "",
