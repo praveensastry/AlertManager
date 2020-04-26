@@ -7,14 +7,25 @@ actula monitors.
 
  */
 class AlertManager {
-    constructor(monitors) {
+    constructor(monitors, shouldPersistData) {
         this.monitors = monitors;
+        this.shouldPersistData = shouldPersistData || false;
+        if (shouldPersistData) {
+            this.storageDriver = new StorageDriver();
+        }
     }
 
     process(data) {
+        // Data Persistance is Alert Manager's concern
+        // StorageDriver can be configured with appropriate storage config
+        if (this.shouldPersistData) {
+            this.storageDriver.save(data);
+        }
+        // Each Monitors state will only contain data necessary to verfiy and alert
         this.monitors.forEach(monitor => {
             monitor.trigger(data);
         });
+        
     }
 }
 
