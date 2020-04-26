@@ -45,19 +45,47 @@ The format of the alerts produced should be:
 
 ### Build and Execution
 
-To build the application:
+Prerequisite:
+
+- Node needs to be installed on the executing machine.
+- If yarn is not installed, please install it using 
+
 ```bash
-./gradlew clean build
+npm install -g yarn
 ```
+
+To install application deps
+```bash
+yarn
+```
+
+To test the application:
+```bash
+yarn test
+```
+
 To run the application:
 ```bash
-./gradlew run --args example/input1.jsonl
+yarn start
 ```
 
-### Submissions
+To Debug (comes with Auto Attach for VS Code):
+```bash
+yarn debug
+```
 
-Submissions will be assessed on:
-- correctness
-- code structure
-- clean, readable code
-- performance
+### Notes
+
+GoodThings:
+
+- This solution replicates a real world alert manager application and is highly extendable with support for multiple notification channels, logging, metrics support etc.
+- This solution support streaming data as opposed to reading entire dataset in memory and so is more efficient.
+- This application has 0 third party dependencies. It uses babel,jest for testing and transpiling only.
+- 
+
+Not so good things:
+
+- The implementation is timeboxed to 5 hours and hence it's very basic
+- While I designed it keeping extension in mind, it is not production ready
+- I just wrote one test to indicate how I would test this implementation. I didn't hand time to write multiple tests extensively. However I wouldn't do that in a real job scenario.
+- I added comments as and when it's appropriate.

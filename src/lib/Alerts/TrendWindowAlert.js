@@ -3,11 +3,12 @@ import BaseAlert from "./BaseAlert.js";
 class TrendWindowAlert extends BaseAlert {
     constructor(window, notifier, throttleDuration, waitForFullEvaluationWindow) {
         super(window, notifier, waitForFullEvaluationWindow);
-        this.trendDirection = null;
         this.lastAlertedAt = null;
         this.throttleDuration = throttleDuration;
-        this.currentRate = null;
-        this.previousRate = null;
+    }
+
+    getTrendDirection(a,b) {
+        return a - b > 0 ? 1 : -1;
     }
 
     getTrendingSubArray(input) {
@@ -16,13 +17,17 @@ class TrendWindowAlert extends BaseAlert {
         }
 
         // detect trend if trendDirection is not set
-        let trendDirection = input[input.length - 1].rate > input[input.length - 2].rate ? 1 : -1;
+        let trendDirection = getTrendDirection(input[input.length - 1].rate, input[input.length - 2].rate);
 
         for (let i = input.length - 2; i >= 1; i--) {
-            let currentTrend = (input[i].rate - input[i - 1].rate) > 0 ? 1 : -1;
+            let currentTrend = getTrendDirection(input[i].rate, input[i - 1].rate);
             if (currentTrend !== trendDirection) {
                 //if trend changed return sub arry
                 return input.slice(i)
+            }
+
+            if (i = 1) {
+                return input;
             }
         }
 
@@ -31,28 +36,22 @@ class TrendWindowAlert extends BaseAlert {
     }
 
     shouldAlert(start, end, lastAlertedAt, throttleDuration, minimumWindow, currentTime) {
-        return ((end - start) > minimumWindow) &&
+        return (Math.floor((end - start)/1000) > minimumWindow) &&
             ((currentTime - lastAlertedAt) > throttleDuration)
     }
 
-    checkCondition(rates, verificationPayload) {
-        const newrate = verificationPayload.rate;
-        const newTimestamp = verificationPayload.timestamp;
-
-        //find trend
-        // if no trend return false
-
-
+    checkCondition(rates) {
         const now = new Date().getTime();
         const start = rates[0].timestamp;
         const end = rates[rates.length - 1].timestamp;
+        const trendDirection = this.getTrendDirection(rates[rates[rates.length - 1]].rate, rates[0].rate)
         if (this.shouldAlert(start, end, this.lastAlertedAt, this.throttleDuration, this.window, now)) {
             this.lastAlertedAt = now;
             const notificationPayload = {
                 timestamp: verificationPayload.timestamp,
                 currencyPair: verificationPayload.currencyPair,
                 alert: trendDirection > 0 ? "rising" : "falling",
-                seconds: this.trendDirection
+                seconds: Math.floor((end - start) / 1000)
             }
             this.notifier.notify(JSON.stringify(notificationPayload));
         }
@@ -84,6 +83,7 @@ class TrendWindowAlert extends BaseAlert {
 
                 // Data has a trend and is of size >= minTrendWindow
                 // Check and Alert
+                this.checkCondition(rates);
                 this.state.set(currencyPair, rates);
             }
         }

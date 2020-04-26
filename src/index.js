@@ -4,28 +4,34 @@ import MovingAverageAlert from "./lib/Alerts/MovingAverageAlert.js";
 import TrendWindowAlert from "./lib/Alerts/TrendWindowAlert.js"
 import NotificationManager from "./lib/NotificationManager.js"
 
-
-const parser = new Parser();
-const notifiers = new NotificationManager();
-// Ideally fetch from config
+// Load Config
+// Ideally fetch from env / external config store
 const movingAverageAlertWindow = 300;
+const trendWindowAlertThrottleDuration = 60;
+
+const notifiers = new NotificationManager();
 const movingAverageAlert = new MovingAverageAlert(movingAverageAlertWindow, notifiers);
-const trendingWindowAlert = new TrendWindowAlert(movingAverageAlertWindow, notifiers, true);
+const trendingWindowAlert = new TrendWindowAlert(movingAverageAlertWindow, notifiers, trendWindowAlertThrottleDuration, true);
 const alertManager = new AlertManager([
     movingAverageAlert,
     trendingWindowAlert
 ]);
 
+// Test Driver
+// Ideally I would write integration tests but hardcoding it as I had limited time
 
+const parser = new Parser();
 parser.on('data', function (data) {
-    // console.log('Got json:', data)
+    // Since Alert Manager is part of the lib, it can se used from multiple places
+    // When file streams are piped as shown here, for developing SDKs and exposing APIs
     alertManager.process(data);
 })
 
 parser.on('end', function () {
-    // console.log('No more data')
+    //place for clean up
 })
 
+// Instead of this a filestream can be piped to parser.
 parser.write('{ "timestamp": 1554933784.023, "currencyPair": "CNYAUD", "rate": 0.39281 }\n');
 parser.write('{ "timestamp": 1554933785.023, "currencyPair": "CNYAUD", "rate": 0.39281 }\n');
 parser.write('{ "timestamp": 1554933786.023, "currencyPair": "CNYAUD", "rate": 0.39281 }\n');
