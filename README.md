@@ -1,7 +1,7 @@
-# Airwallex coding challenge
+# Alert Manager
 
-The aim of this exercise is to implement an "alerting" service which
-will consume a file of currency conversion rates and
+This is the reference implemention of an "alerting" service which
+will consume a stream of currency conversion rates and
 produce alerts for a number of situations.
 
 This coding exercise can be performed in either Java or Kotlin. The build 
@@ -74,18 +74,3 @@ To Debug (comes with Auto Attach for VS Code):
 yarn debug
 ```
 
-### Notes
-
-GoodThings:
-
-- This solution replicates a real world alert manager application and is highly extendable with support for multiple notification channels, logging, metrics support etc.
-- This solution support streaming data as opposed to reading entire dataset in memory and so is more efficient.
-- This application has 0 third party dependencies. It uses babel,jest for testing and transpiling only.
-- 
-
-Not so good things:
-
-- The implementation is timeboxed to 5 hours and hence it's very basic
-- While I designed it keeping extension in mind, it is not production ready
-- I just wrote one test to indicate how I would test this implementation. I didn't hand time to write multiple tests extensively. However I wouldn't do that in a real job scenario.
-- I added comments as and when it's appropriate.
